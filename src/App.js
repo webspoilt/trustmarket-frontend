@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useCallback, useMemo, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Toaster } from 'react-hot-toast';
@@ -38,7 +38,8 @@ const LoadingFallback = () => (
   </div>
 );
 
-// Skeleton loader for page content
+// Skeleton loader for page content - used by child components
+// eslint-disable-next-line no-unused-vars
 const PageSkeleton = () => (
   <div className="animate-pulse">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -58,10 +59,9 @@ const PageSkeleton = () => (
   </div>
 );
 
-// Page preloader hook for intelligent prefetching
+// Page preloader hook for intelligent prefetching - available for future use
+// eslint-disable-next-line no-unused-vars
 const usePagePreloader = () => {
-  const location = useLocation();
-
   return useCallback((path) => {
     // Prefetch page chunks when user hovers over links
     const link = document.querySelector(`a[href="${path}"]`);
@@ -74,7 +74,7 @@ const usePagePreloader = () => {
         document.head.appendChild(preloadLink);
       }, { once: true });
     }
-  }, [location]);
+  }, []);
 };
 
 // Error Boundary with retry functionality
@@ -245,7 +245,7 @@ const ScrollToTop = () => {
 
 // Network-aware loading wrapper
 const NetworkAwareSuspense = ({ children, fallback }) => {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [, setIsOnline] = useState(navigator.onLine);
   const [wasOffline, setWasOffline] = useState(false);
 
   useEffect(() => {
