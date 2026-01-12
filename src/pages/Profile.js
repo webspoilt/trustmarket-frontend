@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 const Profile = () => {
+  // eslint-disable-next-line no-unused-vars
   const { userId } = useParams();
 
   return (
@@ -23,7 +24,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -47,7 +48,7 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
               <div className="space-y-3">
