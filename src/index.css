@@ -241,8 +241,11 @@
   }
   
   .textarea {
-    @apply block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base resize-vertical;
+     .textarea {
+    @apply block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base;
     min-height: 100px;
+    resize: vertical;
+  }
   }
   
   .select {
@@ -441,7 +444,9 @@
   .nav-link-inactive {
     @apply text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100;
   }
-  
+    .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-200 px-2 py-1;
+    padding-bottom: env(safe-area-inset-bottom, 0);
   /* Mobile Bottom Navigation */
   .bottom-nav {
     @apply fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-200 px-2 py-1 safe-area-pb;
