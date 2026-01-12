@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 const Messages = () => {
+  // eslint-disable-next-line no-unused-vars
   const { conversationId } = useParams();
 
   return (
