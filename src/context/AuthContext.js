@@ -50,10 +50,17 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        // Handle validation errors
+        let errorMessage = data.error || 'Login failed';
+        if (data.details && data.details.length > 0) {
+          errorMessage = data.details.map(d => d.msg).join(', ');
+        }
+        throw new Error(errorMessage);
       }
 
-      const { user, token } = data;
+      // Backend returns { success, data: { user, tokens: { accessToken, refreshToken } } }
+      const user = data.data?.user || data.user;
+      const token = data.data?.tokens?.accessToken || data.token;
 
       setState({
         user,
@@ -94,10 +101,17 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        // Handle validation errors
+        let errorMessage = data.error || 'Registration failed';
+        if (data.details && data.details.length > 0) {
+          errorMessage = data.details.map(d => d.msg).join(', ');
+        }
+        throw new Error(errorMessage);
       }
 
-      const { user, token } = data;
+      // Backend returns { success, data: { user, tokens: { accessToken, refreshToken } } }
+      const user = data.data?.user || data.user;
+      const token = data.data?.tokens?.accessToken || data.token;
 
       setState({
         user,
