@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 const ListingDetails = () => {
+  // eslint-disable-next-line no-unused-vars
   const { id } = useParams();
 
   return (
