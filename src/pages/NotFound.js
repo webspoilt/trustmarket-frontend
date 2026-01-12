@@ -17,7 +17,7 @@ const NotFound = () => {
             Sorry, we couldn't find the page you're looking for. It might have been moved, deleted, or the URL might be incorrect.
           </p>
         </div>
-        
+
         <div className="space-y-4">
           <Link
             to="/"
@@ -32,17 +32,17 @@ const NotFound = () => {
             Go Back
           </button>
         </div>
-        
+
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-sm text-gray-500">
             Need help? Visit our{' '}
-            <a href="#" className="text-blue-600 hover:text-blue-500">
+            <button type="button" className="text-blue-600 hover:text-blue-500 bg-transparent border-none cursor-pointer">
               help center
-            </a>{' '}
+            </button>{' '}
             or{' '}
-            <a href="#" className="text-blue-600 hover:text-blue-500">
+            <button type="button" className="text-blue-600 hover:text-blue-500 bg-transparent border-none cursor-pointer">
               contact support
-            </a>
+            </button>
           </p>
         </div>
       </div>
