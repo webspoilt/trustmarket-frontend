@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const SearchResults = () => {
@@ -12,7 +12,7 @@ const SearchResults = () => {
           Search Results {query && `for "${query}"`}
         </h1>
       </div>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {[...Array(8)].map((_, i) => (
           <div key={i} className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow">
