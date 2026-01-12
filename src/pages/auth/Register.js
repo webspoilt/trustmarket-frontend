@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: ''
   });
@@ -14,12 +16,58 @@ const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
 
+  const validatePassword = (password) => {
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+    if (!/[a-z]/.test(password)) {
+      return 'Password must contain a lowercase letter';
+    }
+    if (!/[A-Z]/.test(password)) {
+      return 'Password must contain an uppercase letter';
+    }
+    if (!/[0-9]/.test(password)) {
+      return 'Password must contain a number';
+    }
+    return null;
+  };
+
+  const validatePhone = (phone) => {
+    // Accept formats: +919876543210, 9876543210, 09876543210
+    const cleanPhone = phone.replace(/[\s-]/g, '');
+    const phoneRegex = /^(\+91|91|0)?[6-9]\d{9}$/;
+    return phoneRegex.test(cleanPhone);
+  };
+
+  const formatPhone = (phone) => {
+    // Convert to +91 format
+    const cleanPhone = phone.replace(/[\s-]/g, '');
+    if (cleanPhone.startsWith('+91')) return cleanPhone;
+    if (cleanPhone.startsWith('91')) return '+' + cleanPhone;
+    if (cleanPhone.startsWith('0')) return '+91' + cleanPhone.slice(1);
+    return '+91' + cleanPhone;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
+    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
+      return;
+    }
+
+    // Validate password strength
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
+
+    // Validate phone number
+    if (!validatePhone(formData.phone)) {
+      setError('Please enter a valid Indian phone number');
       return;
     }
 
@@ -27,8 +75,10 @@ const Register = () => {
 
     try {
       const result = await register({
-        name: formData.name,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: formData.email,
+        phone: formatPhone(formData.phone),
         password: formData.password
       });
 
@@ -64,20 +114,37 @@ const Register = () => {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Enter your full name"
-                value={formData.name}
-                onChange={handleChange}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  required
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="First name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  required
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Last name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -96,6 +163,23 @@ const Register = () => {
               />
             </div>
             <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                required
+                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="+91 9876543210"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+              <p className="mt-1 text-xs text-gray-500">Enter your Indian mobile number</p>
+            </div>
+            <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
@@ -110,6 +194,7 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
               />
+              <p className="mt-1 text-xs text-gray-500">Min 8 chars with uppercase, lowercase, and number</p>
             </div>
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
@@ -148,9 +233,9 @@ const Register = () => {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
         </form>
