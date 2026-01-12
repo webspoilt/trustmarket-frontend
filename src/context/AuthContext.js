@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
 
+// API Base URL from environment variable
+const API_URL = process.env.REACT_APP_API_URL || 'https://trustmarket-backend.onrender.com/api';
+
 // Create context
 const AuthContext = createContext();
 
@@ -31,85 +34,95 @@ export const AuthProvider = ({ children }) => {
     error: null,
   });
 
-  // Simple login function
+  // Login function - calls backend API
   const login = async (credentials) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      // For demo purposes, we'll simulate a successful login
-      const mockUser = {
-        id: '1',
-        email: credentials.email,
-        name: 'Demo User',
-        trustScore: 95,
-        isPremium: false,
-      };
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
 
-      const mockToken = 'demo-jwt-token';
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      const { user, token } = data;
 
       setState({
-        user: mockUser,
-        token: mockToken,
+        user,
+        token,
         isAuthenticated: true,
         isLoading: false,
         error: null,
       });
 
       // Store in localStorage
-      localStorage.setItem('accessToken', mockToken);
-      localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem('accessToken', token);
+      localStorage.setItem('user', JSON.stringify(user));
 
       return { success: true };
     } catch (error) {
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: 'Login failed',
+        error: error.message || 'Login failed',
       }));
-      return { success: false, error: 'Login failed' };
+      return { success: false, error: error.message || 'Login failed' };
     }
   };
 
-  // Simple register function
+  // Register function - calls backend API
   const register = async (userData) => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      // For demo purposes, we'll simulate a successful registration
-      const mockUser = {
-        id: '1',
-        email: userData.email,
-        name: userData.name,
-        trustScore: 95,
-        isPremium: false,
-      };
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
 
-      const mockToken = 'demo-jwt-token';
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      const { user, token } = data;
 
       setState({
-        user: mockUser,
-        token: mockToken,
+        user,
+        token,
         isAuthenticated: true,
         isLoading: false,
         error: null,
       });
 
       // Store in localStorage
-      localStorage.setItem('accessToken', mockToken);
-      localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem('accessToken', token);
+      localStorage.setItem('user', JSON.stringify(user));
 
       return { success: true };
     } catch (error) {
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: 'Registration failed',
+        error: error.message || 'Registration failed',
       }));
-      return { success: false, error: 'Registration failed' };
+      return { success: false, error: error.message || 'Registration failed' };
     }
   };
 
-  // Simple logout function
+  // Logout function
   const logout = async () => {
     setState({
       user: null,
