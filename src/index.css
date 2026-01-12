@@ -72,7 +72,10 @@
 /* Base Styles */
 @layer base {
   * {
-    @apply border-border;
+        box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
   }
   
   html {
