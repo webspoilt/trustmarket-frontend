@@ -32,19 +32,24 @@ const Register = () => {
     return null;
   };
 
-  const validatePhone = (phone) => {
-    // Accept formats: +919876543210, 9876543210, 09876543210
-    const cleanPhone = phone.replace(/[\s-]/g, '');
-    const phoneRegex = /^(\+91|91|0)?[6-9]\d{9}$/;
-    return phoneRegex.test(cleanPhone);
+    const validatePhone = (phone) => {
+    // Accept any 10-digit number starting with 6,7,8,9 or with +91/91 prefix
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    // Check if it's a valid 10-digit Indian mobile or with country code
+    if (/^[6-9]\d{9}$/.test(cleanPhone)) return true;
+    if (/^0[6-9]\d{9}$/.test(cleanPhone)) return true;
+    if (/^91[6-9]\d{9}$/.test(cleanPhone)) return true;
+    if (/^\+91[6-9]\d{9}$/.test(cleanPhone)) return true;
+    return false;
   };
 
   const formatPhone = (phone) => {
-    // Convert to +91 format
-    const cleanPhone = phone.replace(/[\s-]/g, '');
+    // Convert to +91XXXXXXXXXX format for backend
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
     if (cleanPhone.startsWith('+91')) return cleanPhone;
-    if (cleanPhone.startsWith('91')) return '+' + cleanPhone;
+    if (cleanPhone.startsWith('91') && cleanPhone.length === 12) return '+' + cleanPhone;
     if (cleanPhone.startsWith('0')) return '+91' + cleanPhone.slice(1);
+    if (cleanPhone.length === 10) return '+91' + cleanPhone;
     return '+91' + cleanPhone;
   };
 
